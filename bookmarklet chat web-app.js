@@ -1,5 +1,5 @@
 javascript:(function() {
-  // Create CSS styles
+  // Crear estilos CSS
   const style = document.createElement('style');
   style.innerHTML = `
     #floatingChatBubble {
@@ -79,21 +79,21 @@ javascript:(function() {
   `;
   document.head.appendChild(style);
 
-  // Create floating chat bubble
+  // Crear burbuja flotante
   const bubble = document.createElement('div');
   bubble.id = 'floatingChatBubble';
   document.body.appendChild(bubble);
 
-  // Create chat container
+  // Crear contenedor de chat
   const chatContainer = document.createElement('div');
   chatContainer.id = 'chatContainer';
 
-  // Create chat messages area
+  // Crear área de mensajes
   const chatMessages = document.createElement('div');
   chatMessages.id = 'chatMessages';
   chatContainer.appendChild(chatMessages);
 
-  // Create input and send button
+  // Crear input y botón de enviar
   const chatInputContainer = document.createElement('div');
   chatInputContainer.id = 'chatInputContainer';
   const chatInput = document.createElement('input');
@@ -109,7 +109,7 @@ javascript:(function() {
   chatContainer.appendChild(chatInputContainer);
   document.body.appendChild(chatContainer);
 
-  // Load messages from localStorage
+  // Cargar mensajes desde localStorage
   function loadMessages() {
     const savedMessages = JSON.parse(localStorage.getItem('chatMessages')) || [];
     chatMessages.innerHTML = '';
@@ -118,14 +118,14 @@ javascript:(function() {
     });
   }
 
-  // Save messages to localStorage
+  // Guardar mensajes en localStorage
   function saveMessage(message, type) {
     const savedMessages = JSON.parse(localStorage.getItem('chatMessages')) || [];
     savedMessages.push({ message, type });
     localStorage.setItem('chatMessages', JSON.stringify(savedMessages));
   }
 
-  // Function to add messages to chat
+  // Función para agregar mensajes
   function addMessage(message, type) {
     const messageDiv = document.createElement('div');
     messageDiv.classList.add('message', type === 'user' ? 'userMessage' : 'responseMessage');
@@ -134,56 +134,43 @@ javascript:(function() {
     chatMessages.scrollTop = chatMessages.scrollHeight;
   }
 
-  // Send message to server using fetch
+  // Enviar mensaje con botón o teclado (Enter)
   function sendMessage() {
     const message = chatInput.value.trim();
     if (message) {
       addMessage(message, 'user');
       saveMessage(message, 'user');
       chatInput.value = '';
-
-      // Send message to server
-      fetch('https://your-ngrok-url.ngrok.io/chat', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ message }),
-      })
-      .then(response => response.json())
-      .then(data => {
-        // Display server response
-        const responseMessage = data.reply;
-        addMessage(responseMessage, 'response');
-        saveMessage(responseMessage, 'response');
-      })
-      .catch(error => {
-        console.error('Error:', error);
-      });
+      // Simulación de respuesta
+      setTimeout(() => {
+        const response = 'Respuesta del sistema: ' + message;
+        addMessage(response, 'response');
+        saveMessage(response, 'response');
+      }, 500);
     }
   }
 
-  // Event listener for send button
+  // Evento para enviar con botón
   sendButton.addEventListener('click', sendMessage);
 
-  // Event listener for Enter key
+  // Evento para enviar con tecla Enter
   chatInput.addEventListener('keypress', function(e) {
     if (e.key === 'Enter') {
       sendMessage();
     }
   });
 
-  // Show/hide chat when clicking the bubble
+  // Mostrar/ocultar chat al tocar la burbuja
   bubble.addEventListener('click', function() {
     if (chatContainer.style.display === 'none') {
       chatContainer.style.display = 'flex';
-      loadMessages(); // Load messages when opening
+      loadMessages(); // Cargar mensajes al abrir
     } else {
       chatContainer.style.display = 'none';
     }
   });
 
-  // Make the bubble draggable (touch events)
+  // Hacer que la burbuja sea arrastrable con eventos táctiles
   bubble.addEventListener('touchstart', function(e) {
     const touch = e.touches[0];
     let offsetX = touch.clientX - bubble.getBoundingClientRect().left;
